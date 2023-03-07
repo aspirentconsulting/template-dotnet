@@ -1,9 +1,13 @@
+using ASC.API.Request;
+using ASC.API.Response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public class LoginController : ControllerBase
     {
         private readonly ILogger<LoginController> _logger;
@@ -13,7 +17,7 @@ namespace ASC.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{}", Name = nameof(GetGreet))]
+        [HttpGet(Name = "GetGreet")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult GetGreet()
         {
@@ -21,13 +25,25 @@ namespace ASC.API.Controllers
             return Ok(myResponse);
         }
 
-        // [HttpGet(Name = "GreetUserByPath")]
-        // [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        // [Route("Login/GreetUser/{name}")]
-        // public IActionResult GreetUserByPath(string name)
-        // {
-        //    var myResponse = "Hello from Core 7.0, " + name;
-        //    return Ok(myResponse);
-        // }
+        [HttpGet("GreetUser/{name}", Name = "GreetUserByPath")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public IActionResult GreetUserByPath(string name)
+        {
+            var myResponse = "Hello from Core 7.0, " + name;
+            return Ok(myResponse);
+        }
+
+        [HttpPost("GreetUserByPost", Name = "GreetUserByPost")]
+        [ProducesResponseType(typeof(Greeting), StatusCodes.Status201Created)]
+        public IActionResult GreetUserByPost(User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("invalid input");
+            }
+
+            Greeting greeting = new(user.Name);
+            return Created(string.Empty, greeting);
+        }
     }
 }
