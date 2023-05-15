@@ -69,9 +69,9 @@ namespace ASC.API.Controllers
 
         [HttpGet(Name = "FindAllSprockets")]
         [ProducesResponseType(typeof(PageResponse<SprocketResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> FindAll(FindAllSprocketsRequest request)
+        public async Task<IActionResult> FindAll(int page = 0, int pageSize = 10)
         {
-            var response = await _sprocketService.FindAll(request);
+            var response = await _sprocketService.FindAll(new FindAllSprocketsRequest(page, pageSize));
 
             return Ok(response);
         }

@@ -7,6 +7,13 @@ namespace ASC.Application.Sprockets.Common
 {
     public class SprocketService : ISprocketService
     {
+        private readonly ISprocketRepository _repository;
+
+        public SprocketService(ISprocketRepository repository)
+        {
+            _repository = repository;
+        }
+
         public Task<SprocketResponse> Update(UpdateSprocketRequest request)
         {
             throw new NotImplementedException();
@@ -27,9 +34,14 @@ namespace ASC.Application.Sprockets.Common
             throw new NotImplementedException();
         }
 
-        public Task<PageResponse<SprocketResponse>> FindAll(FindAllSprocketsRequest request)
+        public async Task<PageResponse<SprocketResponse>> FindAll(FindAllSprocketsRequest request)
         {
-            throw new NotImplementedException();
+            var entities = await _repository.GetAll();
+
+            var responses = entities.Select(x =>
+                new SprocketResponse(x.Name, x.Id, x.PitchDiameter, x.TeethCount, x.ChainPitch, x.Deleted));
+
+            return new PageResponse<SprocketResponse>(responses, entities.Count);
         }
     }
 }

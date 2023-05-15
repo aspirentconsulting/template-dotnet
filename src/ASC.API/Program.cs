@@ -1,3 +1,5 @@
+using ASC.Infrastructure.Modules;
+
 namespace ASC.API
 {
     public class Program
@@ -8,6 +10,7 @@ namespace ASC.API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.Register();
 
             var app = builder.Build();
 
